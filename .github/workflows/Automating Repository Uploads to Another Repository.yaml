@@ -13,15 +13,7 @@ jobs:
     - name: Checkout Repository A
       uses: actions/checkout@v2
 
-    - name: Print Git Version
-      run: git --version
-
-    - name: Print PAT Masked
-      run: echo $GH_PAT_B | sha256sum
-
-    - name: Push to Repository B
-      env:
-        GH_PAT_B: ${{ secrets.GH_PAT_B }}
+    - name: Set up Git
       run: |
         echo "Setting up git config"
         git config --global user.name "github-actions[bot]"
