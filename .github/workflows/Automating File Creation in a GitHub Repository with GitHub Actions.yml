@@ -28,4 +28,4 @@ jobs:
           git config --global user.email 'moeinabtahiuni@gmail.com'
           git add .
           git commit -m 'Create folder and file automatically by GitHub Actions' || echo "No changes to commit"
-          git push https://${{ secrets.ACTIONS_PAT }}@github.com/MoeinAbtahi/Software-Engineering-Studio-ENGR5590G-Presentation.git
+          git push https://${{ secrets.ACTIONS_PAT }}@github.com/MoeinAbtahi/Software-Engineering-Studio-ENGR5590G-Peresntation
