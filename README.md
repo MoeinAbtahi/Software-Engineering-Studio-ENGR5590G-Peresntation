@@ -17,7 +17,12 @@ Step-by-Step Guide:
 3. Click on New repository secret.
 4. Name the secret ACTIONS_PAT (or any name you prefer).
 5. Paste the copied PAT into the value field and save it.
-### 3. Create a yaml file
+### 3. Grant Github Action Workfolw permisiions:
+1. Go to your GitHub repository
+2. Navigate to Settings > Actions > General.
+3. Under Workflow permissions part, choose Read and write permissions/
+4. Click on Save.
+### 4. Create a yaml file
 ```yaml
 name: Auto File Creation
 
@@ -52,6 +57,6 @@ jobs:
           git push https://${{ secrets.ACTIONS_PAT }}@github.com/your_username/your_repo-name.git
 
 ```
-### 4. Actual Example: Creating a File Based on LLM Response and Saving It in a Folder Path from a CSV File
+### 5. Actual Example: Creating a File Based on LLM Response and Saving It in a Folder Path from a CSV File
 I will demonstrate this in class : [https://github.com/MoeinAbtahi/Foundations.of.Software.Engineering]
 
