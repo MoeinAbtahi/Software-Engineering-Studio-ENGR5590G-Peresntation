@@ -3,7 +3,7 @@ name: Sync to Repository B
 on:
   push:
     branches:
-      - main  # Adjust this if you want to trigger on a different branch
+      - main
 
 jobs:
   sync:
@@ -13,23 +13,24 @@ jobs:
     - name: Checkout Repository A
       uses: actions/checkout@v2
 
+    - name: Print Git Remote Info
+      run: |
+        git remote -v
+
     - name: Push to Repository B
       env:
         GH_PAT_B: ${{ secrets.GH_PAT_B }}
       run: |
-        # Set up git configuration
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         
-        # Remove existing remote if it exists
         git remote remove origin || true
         
-        # Add new remote for Repository B
         git remote add origin https://x-access-token:${{ secrets.GH_PAT_B }}@github.com/MoeinAbtahi/Software-Engineering-Studio-ENGR5590G-Peresntation-Clone.git
         
-        # Add and commit all files
+        git remote -v  # Check remote URL configuration
+        
         git add .
         git commit -m "Sync from Repository A" || true
         
-        # Force push to the target repository
         git push -u origin main --force
