@@ -20,10 +20,11 @@ jobs:
       - name: Copy files to destination repository
         run: |
           mkdir upload_temp
-          cp -r * upload_temp/
+          cp -r !(upload_temp) upload_temp/  # Copy all files and folders except 'upload_temp' itself
           cd upload_temp
           git init
           git remote add destination-repo https://github.com/MoeinAbtahi/Software-Engineering-Studio-ENGR5590G-Peresntation-Clone.git
           git add .
           git commit -m "Upload files to destination repository"
           git push -f destination-repo main  # Adjust branch name if needed
+
