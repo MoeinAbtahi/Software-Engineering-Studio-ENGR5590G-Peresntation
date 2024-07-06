@@ -1,4 +1,4 @@
-name: Upload Files to New Repository
+name: Sync to Repository B
 
 on:
   push:
@@ -21,13 +21,15 @@ jobs:
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         
-        # Initialize a new repository
-        git init
-        git remote add origin https://x-access-token:${{ secrets.GH_PAT_B }}@github.com/MoeinAbtahi/Software-Engineering-Studio-ENGR5590G-Peresntation-Clone.git
+        # Remove existing remote if it exists
+        git remote remove origin || true
+        
+        # Add new remote for Repository B
+        git remote add origin https://x-access-token:${{ secrets.GH_PAT_B }}@github.com/MoeinAbtahi/Software-Engineering-Studio-ENGR5590G-Presentation-Clone.git
         
         # Add and commit all files
         git add .
-        git commit -m "Initial commit"
+        git commit -m "Sync from Repository A" || true
         
         # Force push to the target repository
         git push -u origin main --force
