@@ -13,24 +13,32 @@ jobs:
     - name: Checkout Repository A
       uses: actions/checkout@v2
 
-    - name: Print Git Remote Info
-      run: |
-        git remote -v
+    - name: Print Git Version
+      run: git --version
+
+    - name: Print PAT Masked
+      run: echo $GH_PAT_B | sha256sum
 
     - name: Push to Repository B
       env:
         GH_PAT_B: ${{ secrets.GH_PAT_B }}
       run: |
+        echo "Setting up git config"
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         
+        echo "Removing existing origin if any"
         git remote remove origin || true
         
+        echo "Adding new remote"
         git remote add origin https://x-access-token:${{ secrets.GH_PAT_B }}@github.com/MoeinAbtahi/Software-Engineering-Studio-ENGR5590G-Peresntation-Clone.git
         
-        git remote -v  # Check remote URL configuration
+        echo "Verifying remote URL configuration"
+        git remote -v
         
+        echo "Adding and committing changes"
         git add .
         git commit -m "Sync from Repository A" || true
         
+        echo "Pushing to repository"
         git push -u origin main --force
