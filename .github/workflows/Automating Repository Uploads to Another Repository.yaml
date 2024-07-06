@@ -25,7 +25,7 @@ jobs:
         git remote remove origin || true
         
         # Add new remote for Repository B
-        git remote add origin https://x-access-token:${{ secrets.GH_PAT_B }}https://github.com/MoeinAbtahi/Software-Engineering-Studio-ENGR5590G-Peresntation-Clone.git
+        git remote add origin https://x-access-token:${{ secrets.GH_PAT_B }}@github.com/MoeinAbtahi/Software-Engineering-Studio-ENGR5590G-Peresntation-Clone.git
         
         # Add and commit all files
         git add .
