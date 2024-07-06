@@ -24,14 +24,13 @@ jobs:
           else
               echo "Creating new file."
               echo "This is a new file created by GitHub Actions on $(date)" > $FILE
-          fi
-
+          
       - name: Commit and push changes
         env:
-          GITHUB_TOKEN: ${{ secrets.ACTIONS_PAT }}
+          ACTIONS_PAT: ${{ secrets.ACTIONS_PAT }}
         run: |
           git config --global user.name 'MoeinAbtahi'
           git config --global user.email 'moeinabtahiuni@gmail.com'
           git add .
           git commit -m 'Add or update file automatically by GitHub Actions' || echo "No changes to commit"
-          git push https://${{ secrets.ACTIONS_PAT }}@github.com/MoeinAbtahi/Software-Engineering-Studio-ENGR5590G-Peresntation.git
+          git push https://${{ secrets.ACTIONS_PAT }}@github.com/MoeinAbtahi/Software-Engineering-Studio-ENGR5590G-Presentation.git
