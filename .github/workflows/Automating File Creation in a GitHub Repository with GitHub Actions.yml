@@ -1,4 +1,4 @@
-name: Auto File Creation
+name: Create Folder and File
 
 on:
   push:
@@ -8,23 +8,18 @@ on:
     - cron: '0 0 * * *' # This will run the action daily at midnight UTC
 
 jobs:
-  create-file:
+  create-folder-and-file:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Create or update file
+      - name: Create folder and file
         run: |
-          FILE=newfile.txt
-          if [ -f "$FILE" ]; then
-              echo "Updating existing file."
-              echo "Updated content at $(date)" >> $FILE
-          else
-              echo "Creating new file."
-              echo "This is a new file created by GitHub Actions on $(date)" > $FILE
-          
+          mkdir -p new_folder
+          echo "Software-Engineering-Studio-ENGR5590G-Presentation" > new_folder/newfile.txt
+
       - name: Commit and push changes
         env:
           ACTIONS_PAT: ${{ secrets.ACTIONS_PAT }}
@@ -32,5 +27,5 @@ jobs:
           git config --global user.name 'MoeinAbtahi'
           git config --global user.email 'moeinabtahiuni@gmail.com'
           git add .
-          git commit -m 'Add or update file automatically by GitHub Actions' || echo "No changes to commit"
+          git commit -m 'Create folder and file automatically by GitHub Actions' || echo "No changes to commit"
           git push https://${{ secrets.ACTIONS_PAT }}@github.com/MoeinAbtahi/Software-Engineering-Studio-ENGR5590G-Presentation.git
