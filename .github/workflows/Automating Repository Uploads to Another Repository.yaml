@@ -3,41 +3,31 @@ name: Upload Files to New Repository
 on:
   push:
     branches:
-      - main  # Adjust this based on your branch name
+      - main  # Adjust this if you want to trigger on a different branch
 
 jobs:
-  upload:
+  sync:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout current repository
-        uses: actions/checkout@v2
+    - name: Checkout Repository A
+      uses: actions/checkout@v2
 
-      - name: Set up Git
-        run: |
-          git config --global user.email "your-email@example.com"
-          git config --global user.name "Your Name"
-
-      - name: Create temporary directory
-        run: mkdir upload_temp
-
-      - name: Copy files to temporary directory
-        run: |
-          shopt -s extglob
-          cp -r !(upload_temp) upload_temp/
-
-      - name: Change directory to upload_temp
-        run: cd upload_temp
-
-      - name: Initialize Git
-        run: |
-          git init
-          git remote add destination-repo https://github.com/MoeinAbtahi/Software-Engineering-Studio-ENGR5590G-Peresntation-Clone.git
-
-      - name: Add files
-        run: git add .
-
-      - name: Commit changes
-        run: git commit -m "Upload files to destination repository"
-
-      - name: Push to destination repository
-        run: git push -f destination-repo main  # Adjust branch name if needed
+    - name: Push to Repository B
+      env:
+        GH_PAT_B: ${{ secrets.GH_PAT_B }}
+      run: |
+        # Set up git configuration
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        
+        # Initialize a new repository
+        git init
+        git remote add origin https://x-access-token:${{ secrets.GH_PAT_B }}@github.com/MoeinAbtahi/Software-Engineering-Studio-ENGR5590G-Peresntation-Clone.git
+        
+        # Add and commit all files
+        git add .
+        git commit -m "Initial commit"
+        
+        # Force push to the target repository
+        git push -u origin main --force
