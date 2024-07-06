@@ -1,4 +1,4 @@
-name: Upload Files to Another Repository
+name: Upload Files to New Repository
 
 on:
   push:
@@ -17,14 +17,27 @@ jobs:
           git config --global user.email "your-email@example.com"
           git config --global user.name "Your Name"
 
-      - name: Copy files to destination repository
+      - name: Create temporary directory
+        run: mkdir upload_temp
+
+      - name: Copy files to temporary directory
         run: |
-          mkdir upload_temp
-          cp -r !(upload_temp) upload_temp/  # Copy all files and folders except 'upload_temp' itself
-          cd upload_temp
+          shopt -s extglob
+          cp -r !(upload_temp) upload_temp/
+
+      - name: Change directory to upload_temp
+        run: cd upload_temp
+
+      - name: Initialize Git
+        run: |
           git init
           git remote add destination-repo https://github.com/MoeinAbtahi/Software-Engineering-Studio-ENGR5590G-Peresntation-Clone.git
-          git add .
-          git commit -m "Upload files to destination repository"
-          git push -f destination-repo main  # Adjust branch name if needed
 
+      - name: Add files
+        run: git add .
+
+      - name: Commit changes
+        run: git commit -m "Upload files to destination repository"
+
+      - name: Push to destination repository
+        run: git push -f destination-repo main  # Adjust branch name if needed
