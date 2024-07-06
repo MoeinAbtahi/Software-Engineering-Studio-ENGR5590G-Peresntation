@@ -19,7 +19,6 @@ Step-by-Step Guide:
 5. Paste the copied PAT into the value field and save it.
 ### 3. Create a yaml file
 ```yaml
-
 name: Auto File Creation
 
 on:
@@ -38,7 +37,9 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Create new file
-        run: echo "This is a new file created by GitHub Actions" > newfile.txt
+        run: |
+          mkdir -p new_folder
+          echo "Software-Engineering-Studio-ENGR5590G-Presentation" > new_folder/newfile.txt
 
       - name: Commit and push changes
         env:
@@ -46,9 +47,10 @@ jobs:
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
-          git add newfile.txt
+          git add new_folder/newfile.txt
           git commit -m "Automated file creation"
-          git push https://${{ secrets.ACTIONS_PAT }}@github.com/your_username/you_repo-name.git
+          git push https://${{ secrets.ACTIONS_PAT }}@github.com/your_username/your_repo-name.git
+
 ```
 ### 4. Actual Example: Creating a File Based on LLM Response and Saving It in a Folder Path from a CSV File
 I will demonstrate this in class : [https://github.com/MoeinAbtahi/Foundations.of.Software.Engineering]
