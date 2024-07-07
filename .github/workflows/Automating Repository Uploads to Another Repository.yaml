@@ -32,7 +32,7 @@ jobs:
         git fetch origin
         
         echo "Checking out main branch from Repository B"
-        git checkout origin/main -b main
+        git checkout -B main --track origin/main
         
         echo "Adding and committing changes"
         git add .
