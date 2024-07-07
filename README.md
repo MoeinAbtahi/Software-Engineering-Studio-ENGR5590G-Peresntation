@@ -60,8 +60,7 @@ jobs:
 ### 5. Actual Example: Creating a File Based on LLM Response and Saving It in a Folder Path from a CSV File
 I will demonstrate this in class : [https://github.com/MoeinAbtahi/Foundations.of.Software.Engineering]
 
-## Example 2 : Automating Repository Uploads to Another Repository or Service
-
+## Example 2 : Automating Repository Uploads to cloud Services
 ### 1. Docker Hub Credentials:
 1. **Generate Docker Hub Access Token:**
    - Go to Docker Hub and log in to your account.
