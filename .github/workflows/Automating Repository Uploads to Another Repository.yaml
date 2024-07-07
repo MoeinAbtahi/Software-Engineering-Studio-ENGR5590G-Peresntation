@@ -16,14 +16,14 @@ jobs:
     - name: Set up Git
       run: |
         echo "Setting up git config"
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git config --global user.name "MoeinAbtahi"
+        git config --global user.email "moeinabtahiuni.com"
         
         echo "Removing existing origin if any"
         git remote remove origin || true
         
         echo "Adding new remote"
-        git remote add origin https://x-access-token:${{ secrets.GH_PAT_B }}@github.com/MoeinAbtahi/Software-Engineering-Studio-ENGR5590G-Peresntation-Clone.git
+        git remote add origin https://MoeinAbtahi:${{ secrets.YOUR_USER_PAT }}@github.com/MoeinAbtahi/Software-Engineering-Studio-ENGR5590G-Peresntation-Clone.git
         
         echo "Verifying remote URL configuration"
         git remote -v
