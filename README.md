@@ -66,35 +66,49 @@ I will demonstrate this in class : [https://github.com/MoeinAbtahi/Foundations.o
 
 
 ```yaml
-name: Upload Files to Another Repository
+# Sample YAML file for CI/CD operations
 
-on:
-  push:
-    branches:
-      - main  # Adjust this based on your branch name
+stages:
+  - python_setup
+  - python_test
+  - java_build
+  - docker_build
+  - docker_deploy
 
-jobs:
-  upload:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout current repository
-        uses: actions/checkout@v2
+python_setup:
+  stage: python_setup
+  script:
+    - python --version
+    - pip install -r requirements.txt
+    - pip install pylint
 
-      - name: Set up Git
-        run: |
-          git config --global user.email "your-email@example.com"
-          git config --global user.name "Your Name"
+python_test:
+  stage: python_test
+  script:
+    - pytest
+    - pylint *.py
 
-      - name: Copy files to destination repository
-        run: |
-          mkdir upload_temp
-          cp -r * upload_temp/
-          cd upload_temp
-          git init
-          git remote add destination-repo https://github.com/your-username/destination-repo.git
-          git add .
-          git commit -m "Upload files to destination repository"
-          git push -f destination-repo main  # Adjust branch name if needed
+java_build:
+  stage: java_build
+  script:
+    - mvn clean install
+
+docker_build:
+  stage: docker_build
+  script:
+    - docker build -t my-docker-image .
+    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+    - docker tag my-docker-image $DOCKER_USERNAME/my-docker-image
+    - docker push $DOCKER_USERNAME/my-docker-image
+
+docker_deploy:
+  stage: docker_deploy
+  script:
+    - ssh user@cloud-server 'docker pull $DOCKER_USERNAME/my-docker-image'
+    - ssh user@cloud-server 'docker stop my-container || true'
+    - ssh user@cloud-server 'docker rm my-container || true'
+    - ssh user@cloud-server 'docker run -d --name my-container -p 80:80 $DOCKER_USERNAME/my-docker-image'
+
 
 ```
 
