@@ -13,17 +13,24 @@ jobs:
     - name: Checkout Repository A
       uses: actions/checkout@v2
 
+    - name: Set up SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan github.com >> ~/.ssh/known_hosts
+
     - name: Set up Git
       run: |
         echo "Setting up git config"
-        git config --global user.name "MoeinAbtahi"
-        git config --global user.email "moeinabtahiuni@gmail.com"
+        git config --global user.name "YourUserName"
+        git config --global user.email "you@example.com"
         
         echo "Removing existing origin if any"
         git remote remove origin || true
         
         echo "Adding new remote"
-        git remote add origin https://MoeinAbtahi:${{ secrets.YOUR_USER_PAT }}@github.com/MoeinAbtahi/Software-Engineering-Studio-ENGR5590G-Peresntation-Clone.git
+        git remote add origin git@github.com:MoeinAbtahi/Software-Engineering-Studio-ENGR5590G-Peresntation-Clone.git
         
         echo "Verifying remote URL configuration"
         git remote -v
