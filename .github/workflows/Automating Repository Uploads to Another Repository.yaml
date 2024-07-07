@@ -1,4 +1,4 @@
-name: Sync to Repository B
+name: Sync New Folder to Repository B
 
 on:
   push:
@@ -13,18 +13,11 @@ jobs:
     - name: Checkout Repository A
       uses: actions/checkout@v2
 
-    - name: Set up SSH
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan github.com >> ~/.ssh/known_hosts
-
     - name: Set up Git
       run: |
         echo "Setting up git config"
-        git config --global user.name "YourUserName"
-        git config --global user.email "you@example.com"
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
         
         echo "Removing existing origin if any"
         git remote remove origin || true
@@ -41,9 +34,12 @@ jobs:
         echo "Checking out main branch from Repository B"
         git checkout -B main --track origin/main
         
+        echo "Copying new_folder contents"
+        cp -r new_folder/* .  # Adjust this command based on your folder structure
+
         echo "Adding and committing changes"
         git add .
-        git commit -m "Sync from Repository A" || true
-        
+        git commit -m "Sync 'new_folder' from Repository A"
+
         echo "Pushing to repository"
-        git push -u origin main --force
+        git push -u origin main
