@@ -27,6 +27,12 @@ jobs:
         
         echo "Verifying remote URL configuration"
         git remote -v
+
+        echo "Fetching latest changes from Repository B"
+        git fetch origin
+        
+        echo "Checking out main branch from Repository B"
+        git checkout origin/main -b main
         
         echo "Adding and committing changes"
         git add .
