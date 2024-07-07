@@ -62,52 +62,124 @@ I will demonstrate this in class : [https://github.com/MoeinAbtahi/Foundations.o
 
 ## Example 2 : Automating Repository Uploads to Another Repository or Service
 
+### 1. Docker Hub Credentials:
+1. **Generate Docker Hub Access Token:**
+   - Go to Docker Hub and log in to your account.
+   - Navigate to Account Settings > Security > New Access Token.
+   - Give it a name (e.g., GitHub Actions).
+   - Select the required permissions (e.g., write:packages, read:packages for Docker Hub).
+   - Generate the token and copy it.
+
+2. **Add Docker Hub Credentials as Repository Secrets:**
+   - Go to your GitHub repository.
+   - Navigate to Settings > Secrets > New repository secret.
+   - Name the first secret `DOCKER_USERNAME` (for your Docker Hub username).
+   - Paste your Docker Hub username as the value.
+   - Add another secret named `DOCKER_PASSWORD` and paste the Docker Hub access token you generated.
+   - Save both secrets.
+
+### 2. SSH Private Key for Deployment:
+1. **Generate SSH Key Pair (if not already done):**
+   - If you don't have an SSH key pair (public and private), generate one:
+     ```bash
+     ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+     ```
+   - Follow the prompts to generate the key pair.
+
+2. **Add SSH Private Key as a Repository Secret:**
+   - Copy the contents of the private key file (`~/.ssh/id_rsa`).
+   - Go to your GitHub repository.
+   - Navigate to Settings > Secrets > New repository secret.
+   - Name the secret `SSH_PRIVATE_KEY`.
+   - Paste the contents of your private key file into the value field.
+   - Save the secret.
+
+### 3. GitHub Actions Workflow Permissions:
+1. **Grant Read and Write Permissions to Workflows:**
+   - Go to your GitHub repository.
+   - Navigate to Settings > Actions > General.
+   - Under "Workflow permissions," ensure "Read and write permissions" is selected.
+   - Click on Save to apply the permissions.
+
+### Summary of Secrets and Usernames:
+- **Secrets:**
+  - `DOCKER_USERNAME`: Your Docker Hub username.
+  - `DOCKER_PASSWORD`: Docker Hub access token.
+  - `SSH_PRIVATE_KEY`: SSH private key for deployment.
 
 
 
 ```yaml
-# Sample YAML file for CI/CD operations
+name: Comprehensive CI/CD with Docker Deployment and Multi-Language Support
 
-stages:
-  - python_setup
-  - python_test
-  - java_build
-  - docker_build
-  - docker_deploy
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
-python_setup:
-  stage: python_setup
-  script:
-    - python --version
-    - pip install -r requirements.txt
-    - pip install pylint
+permissions:
+  contents: read
 
-python_test:
-  stage: python_test
-  script:
-    - pytest
-    - pylint *.py
+jobs:
+  build:
 
-java_build:
-  stage: java_build
-  script:
-    - mvn clean install
+    runs-on: ubuntu-latest
 
-docker_build:
-  stage: docker_build
-  script:
-    - docker build -t my-docker-image .
-    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-    - docker tag my-docker-image $DOCKER_USERNAME/my-docker-image
-    - docker push $DOCKER_USERNAME/my-docker-image
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-docker_deploy:
-  stage: docker_deploy
-  script:
-    - ssh user@cloud-server 'docker pull $DOCKER_USERNAME/my-docker-image'
-    - ssh user@cloud-server 'docker stop my-container || true'
-    - ssh user@cloud-server 'docker rm my-container || true'
-    - ssh user@cloud-server 'docker run -d --name my-container -p 80:80 $DOCKER_USERNAME/my-docker-image'
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+          
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.10"
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pytest
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    - name: Lint with flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+    - name: Unit Test Results
+      run: mvn -B package --file ./GDA/pom.xml
+
+    - name: Build with Maven
+      run: mvn -B package --file ./GDA/pom.2.xml
+
+    - name: Build and push Docker image
+      env:
+        REPOSITORY: cdaandgda
+        IMAGE_TAG: latest
+      run: |
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/$REPOSITORY:$IMAGE_TAG .
+        docker push ${{ secrets.DOCKER_USERNAME }}/$REPOSITORY:$IMAGE_TAG
+
+    - name: Deploy to Cloud Machine
+      uses: appleboy/ssh-action@v1
+      with:
+        host: 20.106.166.187
+        username: dev
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/cdaandgda:latest
+          sudo docker stop my-container || true
+          sudo docker rm my-container || true
+          sudo docker run -d --name my-container ${{ secrets.DOCKER_USERNAME }}/cdaandgda:latest
+
 
 
 ```
