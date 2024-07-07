@@ -17,7 +17,7 @@ jobs:
       run: |
         echo "Setting up git config"
         git config --global user.name "MoeinAbtahi"
-        git config --global user.email "moeinabtahiuni.com"
+        git config --global user.email "moeinabtahiuni@gmail.com"
         
         echo "Removing existing origin if any"
         git remote remove origin || true
