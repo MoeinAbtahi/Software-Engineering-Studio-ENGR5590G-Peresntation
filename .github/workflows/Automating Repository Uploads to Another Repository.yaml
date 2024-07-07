@@ -36,10 +36,12 @@ jobs:
         
         echo "Copying new_folder contents"
         cp -r new_folder/* .  # Adjust this command based on your folder structure
-
+        
         echo "Adding and committing changes"
         git add .
         git commit -m "Sync 'new_folder' from Repository A"
-
+        
         echo "Pushing to repository"
+        eval $(ssh-agent)
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' | ssh-add - > /dev/null
         git push -u origin main
