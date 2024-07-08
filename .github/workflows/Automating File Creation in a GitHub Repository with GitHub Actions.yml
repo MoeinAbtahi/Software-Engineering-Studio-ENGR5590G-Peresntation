@@ -17,7 +17,7 @@ jobs:
 
       - name: Create folder and file
         run: |
-          mkdir -p new_folder
+          mkdir -p new_folder_2
           echo "Software-Engineering-Studio-ENGR5590G-Presentation" > new_folder/newfile.txt
 
       - name: Commit and push changes
